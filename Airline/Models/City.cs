@@ -138,5 +138,49 @@ namespace Airline.Models
       return newCity;
     }
 
+    public void Delete()
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      MySqlCommand cmd = new MySqlCommand("DELETE FROM cities WHERE id = @CityId; DELETE FROM cities_arrivals_flights WHERE city_id = @CityId; DELETE FROM cities_departures_flights WHERE city_id = @CityId;", conn);
+
+      MySqlParameter cityIdParameter = new MySqlParameter();
+      cityIdParameter.ParameterName = "@CityId";
+      cityIdParameter.Value = this.GetId();
+
+      cmd.Parameters.Add(cityIdParameter);
+      cmd.ExecuteNonQuery();
+
+      if (conn != null)
+      {
+        conn.Close();
+      }
+    }
+
+    public void AddFlight(Flight newFlight)
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"INSERT INTO cities_arrivals_flights (city_id, flight_id) VALUES (@CityId, @FlightId); INSERT INTO cities_departures_flights (city_id, flight_id) VALUES (@CityId, @FlightId);";
+
+      MySqlParameter city_id = new MySqlParameter();
+      city_id.ParameterName = "@CityId";
+      city_id.Value = _id;
+      cmd.Parameters.Add(city_id);
+
+      MySqlParameter flight_id = new MySqlParameter();
+      flight_id.ParameterName = "@FlightId";
+      flight_id.Value = newFlight.GetId();
+      cmd.Parameters.Add(flight_id);
+
+      cmd.ExecuteNonQuery();
+      conn.Close();
+      if (conn != null)
+      {
+          conn.Dispose();
+      }
+    }
+
   }
 }

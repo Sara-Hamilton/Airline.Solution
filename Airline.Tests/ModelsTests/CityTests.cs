@@ -75,5 +75,27 @@ namespace Airline.Tests
       Assert.AreEqual(testCity, foundCity);
     }
 
+    [TestMethod]
+    public void Delete_DeletesCityAssociationsFromDatabase_CityList()
+    {
+      //Arrange
+      Flight testFlight = new Flight("3:00 PM", "8:47 PM", "On time");
+      testFlight.Save();
+
+      string testName = "Cleveland";
+      City testCity = new City(testName);
+      testCity.Save();
+
+      //Act
+      testCity.AddFlight(testFlight);
+      testCity.Delete();
+
+      List<City> resultFlightCities = testFlight.GetArrivalCities();
+      List<City> testFlightCities = new List<City> {};
+
+      //Assert
+      CollectionAssert.AreEqual(testFlightCities, resultFlightCities);
+    }
+
   }
 }
