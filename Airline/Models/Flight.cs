@@ -20,6 +20,33 @@ namespace Airline.Models
       _id = id;
     }
 
+    public override bool Equals(System.Object otherFlight)
+    {
+      if (!(otherFlight is Flight))
+      {
+        return false;
+      }
+      else
+      {
+        Flight newFlight = (Flight) otherFlight;
+        bool idEquality = (this.GetId() == newFlight.GetId());
+        bool departureTimeEquality = (this.GetDepartureTime() == newFlight.GetDepartureTime());
+        bool arrivalTimeEquality = (this.GetArrivalTime() == newFlight.GetArrivalTime());
+        bool statusEquality = (this.GetStatus() == newFlight.GetStatus());
+        return (idEquality && departureTimeEquality && arrivalTimeEquality && statusEquality);
+      }
+    }
+
+    public override int GetHashCode()
+    {
+      return this.GetDepartureTime().GetHashCode();
+    }
+
+    public int GetId()
+    {
+      return _id;
+    }
+
     public string GetDepartureTime()
     {
       return _departureTime;
@@ -27,7 +54,7 @@ namespace Airline.Models
 
     public void SetDepartureTime(string departureTime)
     {
-      return departureTime;
+      _departureTime = departureTime;
     }
 
     public string GetArrivalTime()
@@ -37,7 +64,7 @@ namespace Airline.Models
 
     public void SetArrivalTime(string arrivalTime)
     {
-      return arrivalTime;
+      _arrivalTime = arrivalTime;
     }
 
     public string GetStatus()
@@ -45,9 +72,9 @@ namespace Airline.Models
       return _status;
     }
 
-    public string SetStatus(string status)
+    public void SetStatus(string status)
     {
-      return status;
+      _status = status;
     }
   }
 
