@@ -61,6 +61,19 @@ namespace Airline.Tests
        Assert.AreEqual(testId, result);
     }
 
+    [TestMethod]
+    public void Find_FindsCityInDatabase_City()
+    {
+      //Arrange
+      City testCity = new City("Cleveland");
+      testCity.Save();
+
+      //Act
+      City foundCity = City.Find(testCity.GetId());
+
+      //Assert
+      Assert.AreEqual(testCity, foundCity);
+    }
 
   }
 }

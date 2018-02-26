@@ -108,6 +108,35 @@ namespace Airline.Models
       }
     }
 
+    public static City Find(int id)
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT * FROM cities WHERE id = (@searchId);";
+
+      MySqlParameter searchId = new MySqlParameter();
+      searchId.ParameterName = "@searchId";
+      searchId.Value = id;
+      cmd.Parameters.Add(searchId);
+
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      int cityId = 0;
+      string cityName = "";
+
+      while(rdr.Read())
+      {
+        cityId = rdr.GetInt32(0);
+        cityName = rdr.GetString(1);
+      }
+      City newCity = new City(cityName, cityId);
+      conn.Close();
+      if (conn != null)
+      {
+          conn.Dispose();
+      }
+      return newCity;
+    }
 
   }
 }
