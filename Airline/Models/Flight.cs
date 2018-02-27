@@ -203,7 +203,30 @@ namespace Airline.Models
      return cities;
     }
 
+    public void AddCity(City newCity)
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"INSERT INTO cities_flights (city_id, flight_id) VALUES (@CityId, @ItemId);";
 
+      MySqlParameter city_id = new MySqlParameter();
+      city_id.ParameterName = "@CityId";
+      city_id.Value = newCity.GetId();
+      cmd.Parameters.Add(city_id);
+
+      MySqlParameter flight_id = new MySqlParameter();
+      flight_id.ParameterName = "@ItemId";
+      flight_id.Value = _id;
+      cmd.Parameters.Add(flight_id);
+
+      cmd.ExecuteNonQuery();
+      conn.Close();
+      if (conn != null)
+      {
+          conn.Dispose();
+      }
+    }
 
   }
 }

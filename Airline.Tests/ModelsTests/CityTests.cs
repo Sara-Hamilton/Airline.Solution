@@ -97,5 +97,27 @@ namespace Airline.Tests
       CollectionAssert.AreEqual(testFlightCities, resultFlightCities);
     }
 
+    [TestMethod]
+    public void GetFlights_RetrievesAllFlightsWithCity_FlightList()
+    {
+      //Arrange
+      City testCity = new City("Cleveland");
+      testCity.Save();
+
+      //Act
+      Flight firstFlight = new Flight("3:00 PM", "8:47 PM", "On time");
+      firstFlight.Save(); //this adds the item to the items table
+      firstFlight.AddCity(testCity); //this adds the item and city to the cities_flights table
+      Flight secondFlight = new Flight("5:00 AM", "9:40 AM", "On time", testCity.GetId());
+      secondFlight.Save();
+      secondFlight.AddCity(testCity);
+
+      List<Flight> testFlightList = new List<Flight> {firstFlight, secondFlight};
+      List<Flight> resultFlightList = testCity.GetFlights();
+
+      //Assert
+      CollectionAssert.AreEqual(testFlightList, resultFlightList);
+    }
+
   }
 }

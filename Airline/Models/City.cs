@@ -188,7 +188,7 @@ namespace Airline.Models
       conn.Open();
       MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
       cmd.CommandText = @"SELECT flights. * FROM cities
-          JOIN cities_arrival_flights ON (cities.id = cities_arrival_flights.city_id)
+          JOIN cities_flights ON (cities.id = cities_flights.city_id)
           JOIN flights ON (cities_flights.flight_id = flights.id)
           WHERE cities.id = @CityId;";
 
