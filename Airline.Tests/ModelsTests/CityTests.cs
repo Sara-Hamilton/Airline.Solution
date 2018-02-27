@@ -19,15 +19,15 @@ namespace Airline.Tests
       City.DeleteAll();
     }
 
-    // [TestMethod]
-    //  public void GetAll_CitiesEmptyAtFirst_0()
-    //  {
-    //    //Arrange, Act
-    //    int result = City.GetAll().Count;
-    //
-    //    //Assert
-    //    Assert.AreEqual(0, result);
-    //  }
+    [TestMethod]
+     public void GetAll_CitiesEmptyAtFirst_0()
+     {
+       //Arrange, Act
+       int result = City.GetAll().Count;
+
+       //Assert
+       Assert.AreEqual(0, result);
+     }
 
     [TestMethod]
     public void Save_SavesCityToDatabase_CityList()
@@ -90,7 +90,7 @@ namespace Airline.Tests
       testCity.AddFlight(testFlight);
       testCity.Delete();
 
-      List<City> resultFlightCities = testFlight.GetArrivalCities();
+      List<City> resultFlightCities = testFlight.GetCities();
       List<City> testFlightCities = new List<City> {};
 
       //Assert

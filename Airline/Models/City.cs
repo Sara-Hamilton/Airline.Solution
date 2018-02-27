@@ -142,7 +142,7 @@ namespace Airline.Models
     {
       MySqlConnection conn = DB.Connection();
       conn.Open();
-      MySqlCommand cmd = new MySqlCommand("DELETE FROM cities WHERE id = @CityId; DELETE FROM cities_arrivals_flights WHERE city_id = @CityId; DELETE FROM cities_departures_flights WHERE city_id = @CityId;", conn);
+      MySqlCommand cmd = new MySqlCommand("DELETE FROM cities WHERE id = @CityId; DELETE FROM cities_flights WHERE city_id = @CityId;", conn);
 
       MySqlParameter cityIdParameter = new MySqlParameter();
       cityIdParameter.ParameterName = "@CityId";
@@ -162,7 +162,7 @@ namespace Airline.Models
       MySqlConnection conn = DB.Connection();
       conn.Open();
       var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"INSERT INTO cities_arrivals_flights (city_id, flight_id) VALUES (@CityId, @FlightId); INSERT INTO cities_departures_flights (city_id, flight_id) VALUES (@CityId, @FlightId);";
+      cmd.CommandText = @"INSERT INTO cities_flights (city_id, flight_id) VALUES (@CityId, @FlightId);";
 
       MySqlParameter city_id = new MySqlParameter();
       city_id.ParameterName = "@CityId";
@@ -180,6 +180,41 @@ namespace Airline.Models
       {
           conn.Dispose();
       }
+    }
+
+    public List<Flight> GetFlights()
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT flights. * FROM cities
+          JOIN cities_arrival_flights ON (cities.id = cities_arrival_flights.city_id)
+          JOIN flights ON (cities_flights.flight_id = flights.id)
+          WHERE cities.id = @CityId;";
+
+      MySqlParameter cityIdParameter = new MySqlParameter();
+      cityIdParameter.ParameterName = "@CityId";
+      cityIdParameter.Value = _id;
+      cmd.Parameters.Add(cityIdParameter);
+
+      MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
+      List<Flight> flights = new List<Flight>{};
+
+      while(rdr.Read())
+      {
+        int flightId = rdr.GetInt32(0);
+        string flightDepartureTime = rdr.GetString(1);
+        string flightArrivalTime = rdr.GetString(2);
+        string flightStatus = rdr.GetString(3);
+        Flight newFlight = new Flight(flightDepartureTime, flightArrivalTime, flightStatus, flightId);
+        flights.Add(newFlight);
+      }
+      conn.Close();
+      if (conn != null)
+      {
+          conn.Dispose();
+      }
+      return flights;
     }
 
   }

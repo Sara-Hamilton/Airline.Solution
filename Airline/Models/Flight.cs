@@ -152,12 +152,12 @@ namespace Airline.Models
       }
     }
 
-    public List<City> GetArrivalCities()
+    public List<City> GetCities()
     {
      MySqlConnection conn = DB.Connection();
      conn.Open();
      var cmd = conn.CreateCommand() as MySqlCommand;
-     cmd.CommandText = @"SELECT city_id FROM cities_arrivals_flights WHERE flight_id = @flightId;";
+     cmd.CommandText = @"SELECT city_id FROM cities_flights WHERE flight_id = @flightId;";
 
      MySqlParameter flightIdParameter = new MySqlParameter();
      flightIdParameter.ParameterName = "@flightId";
@@ -203,56 +203,7 @@ namespace Airline.Models
      return cities;
     }
 
-    public List<City> GetDepartureCities()
-    {
-     MySqlConnection conn = DB.Connection();
-     conn.Open();
-     var cmd = conn.CreateCommand() as MySqlCommand;
-     cmd.CommandText = @"SELECT city_id FROM cities_departures_flights WHERE flight_id = @flightId;";
 
-     MySqlParameter flightIdParameter = new MySqlParameter();
-     flightIdParameter.ParameterName = "@flightId";
-     flightIdParameter.Value = _id;
-     cmd.Parameters.Add(flightIdParameter);
-
-     var rdr = cmd.ExecuteReader() as MySqlDataReader;
-
-     List<int> cityIds = new List<int> {};
-     while(rdr.Read())
-     {
-         int cityId = rdr.GetInt32(0);
-         cityIds.Add(cityId);
-     }
-     rdr.Dispose();
-
-     List<City> cities = new List<City> {};
-     foreach (int cityId in cityIds)
-     {
-         var cityQuery = conn.CreateCommand() as MySqlCommand;
-         cityQuery.CommandText = @"SELECT * FROM cities WHERE id = @CityId;";
-
-         MySqlParameter cityIdParameter = new MySqlParameter();
-         cityIdParameter.ParameterName = "@CityId";
-         cityIdParameter.Value = cityId;
-         cityQuery.Parameters.Add(cityIdParameter);
-
-         var cityQueryRdr = cityQuery.ExecuteReader() as MySqlDataReader;
-         while(cityQueryRdr.Read())
-         {
-             int thisCityId = cityQueryRdr.GetInt32(0);
-             string cityName = cityQueryRdr.GetString(1);
-             City foundCity = new City(cityName, thisCityId);
-             cities.Add(foundCity);
-         }
-         cityQueryRdr.Dispose();
-     }
-     conn.Close();
-     if (conn != null)
-     {
-         conn.Dispose();
-     }
-     return cities;
-    }
 
   }
 }
