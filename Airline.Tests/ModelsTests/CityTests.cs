@@ -119,5 +119,19 @@ namespace Airline.Tests
       CollectionAssert.AreEqual(testFlightList, resultFlightList);
     }
 
+    [TestMethod]
+    public void Edit_EditsCityName_City()
+    {
+      //Arrange
+      City testCity = new City ("Cleveland");
+      testCity.Save();
+      string newName = "Portland";
+        //Act
+        testCity.Edit(newName);
+        //Assert
+        Assert.AreEqual(testCity.GetName(), newName);
+
+    }
+
   }
 }
