@@ -193,6 +193,25 @@ namespace Airline.Models
       }
     }
 
+    public void Delete()
+    {
+    MySqlConnection conn = DB.Connection();
+    conn.Open();
+    var cmd = conn.CreateCommand() as MySqlCommand;
+    cmd.CommandText = @"DELETE FROM flights WHERE id = @FlightId; DELETE FROM categories_flights WHERE flight_id = @FlightId;";
+
+    MySqlParameter flightIdParameter = new MySqlParameter();
+    flightIdParameter.ParameterName = "@FlightId";
+    flightIdParameter.Value = this.GetId();
+    cmd.Parameters.Add(flightIdParameter);
+
+    cmd.ExecuteNonQuery();
+    if (conn != null)
+    {
+      conn.Close();
+    }
+    }
+
     public List<City> GetCities()
     {
      MySqlConnection conn = DB.Connection();
@@ -249,7 +268,7 @@ namespace Airline.Models
       MySqlConnection conn = DB.Connection();
       conn.Open();
       var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"INSERT INTO cities_flights (city_id, flight_id) VALUES (@CityId, @ItemId);";
+      cmd.CommandText = @"INSERT INTO cities_flights (city_id, flight_id) VALUES (@CityId, @FlightId);";
 
       MySqlParameter city_id = new MySqlParameter();
       city_id.ParameterName = "@CityId";
@@ -257,7 +276,7 @@ namespace Airline.Models
       cmd.Parameters.Add(city_id);
 
       MySqlParameter flight_id = new MySqlParameter();
-      flight_id.ParameterName = "@ItemId";
+      flight_id.ParameterName = "@FlightId";
       flight_id.Value = _id;
       cmd.Parameters.Add(flight_id);
 
