@@ -15,7 +15,7 @@ namespace Airline.Tests
 
     public void Dispose()
     {
-      // Flight.DeleteAll();
+      Flight.DeleteAll();
       City.DeleteAll();
     }
 

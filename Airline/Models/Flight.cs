@@ -77,6 +77,47 @@ namespace Airline.Models
       _status = status;
     }
 
+    public static List<Flight> GetAll()
+    {
+      List<Flight> allFlights = new List<Flight> {};
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT * FROM flights;";
+      MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
+      while(rdr.Read())
+      {
+        int flightId = rdr.GetInt32(0);
+        string flightDepartureTime = rdr.GetString(1);
+        string flightArrivalTime = rdr.GetString(2);
+        string flightStatus = rdr.GetString(3);
+        Flight newFlight = new Flight(flightDepartureTime, flightArrivalTime, flightStatus, flightId);
+        allFlights.Add(newFlight);
+      }
+      conn.Close();
+      if (conn != null)
+      {
+          conn.Dispose();
+      }
+      return allFlights;
+    }
+
+    public static void DeleteAll()
+    {
+    MySqlConnection conn = DB.Connection();
+     conn.Open();
+
+     var cmd = conn.CreateCommand() as MySqlCommand;
+     cmd.CommandText = @"DELETE FROM flights;";
+
+     cmd.ExecuteNonQuery();
+
+     conn.Close();
+     if (conn != null)
+     {
+      conn.Dispose();
+     }
+    }
 
     public static Flight Find(int id)
     {
